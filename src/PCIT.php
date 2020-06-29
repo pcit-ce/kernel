@@ -54,7 +54,7 @@ use WeChat\WeChat;
  * @property PHPMailer                                       $mail
  * @property GitHub\Service\PullRequest\Client               $pull_request
  * @property GitHub\Service\Webhooks\Server                  $webhooks
- * @property \PCIT\Runner\Client                             $runner
+ * @property \PCIT\Runner\Client                             $runner_job_generator
  * @property \PCIT\Runner\Agent\Docker\DockerHandler         $runner_agent_docker
  * @property \TencentAI\TencentAI                            $tencent_ai
  * @property GitHub\Service\Users\Client                     $user_basic_info
@@ -157,6 +157,7 @@ class PCIT extends Container
                     'Authorization' => 'token '.$this['config']['github']['access_token'],
                     'Accept' => 'application/vnd.github.machine-man-preview+json;
                     application/vnd.github.speedy-preview+json',
+                    'Content-Type' => 'application/json',
                 ],
             ];
         } elseif ($this['config']['gitee']['access_token'] ?? false) {
