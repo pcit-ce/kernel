@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PCIT\Support;
 
+use PCIT\Runner\RPC\Cache;
+
 class CacheKey
 {
     /*
@@ -49,26 +51,17 @@ class CacheKey
         return 'pcit/'.$type.'/list/'.$jobId;
     }
 
-    public static function pipelineDumpListKey(int $jobId, string $type = 'pipeline')
+    private static function pipelineDumpListKey(int $jobId, string $type = 'pipeline')
     {
-        $cache = \Cache::store();
-        $sourceKey = 'pcit/'.$type.'/list/'.$jobId;
-
-        return $cache->dump($sourceKey);
+        return 'pcit/'.$type.'/list/'.$jobId;
     }
 
     public static function pipelineListCopyKey(int $jobId, string $type = 'pipeline', string $prefix = null)
     {
-        $cache = \Cache::store();
-
+        $sourceKey = 'pcit/'.$type.'/list/'.$jobId;
         $copyKey = 'pcit/'.$type.'/list_copy_'.$prefix.'/'.$jobId;
-        $cache->del($copyKey);
 
-        $dump = self::pipelineDumpListKey($jobId, $type);
-
-        $cache->restore($copyKey, 0, $dump);
-
-        return $copyKey;
+        return Cache::copyListKey($sourceKey, $copyKey);
     }
 
     public static function serviceHashKey(int $jobId)
@@ -88,6 +81,7 @@ class CacheKey
 
     /**
      * @param string type download | upload
+     * @param mixed $type
      *
      * @return string
      */
@@ -98,17 +92,11 @@ class CacheKey
 
     /**
      * 删除某个 job 所用到的缓存.
-     *
-     * @throws \Exception
      */
     public static function flush(int $jobId): void
     {
-        $cache = \Cache::store();
+        $keys = Cache::keys('pcit/*/'.$jobId);
 
-        $result = $cache->keys('pcit/*/'.$jobId);
-
-        foreach ($result as $key) {
-            $cache->del($key);
-        }
+        Cache::del($keys);
     }
 }

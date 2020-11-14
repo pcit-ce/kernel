@@ -6,11 +6,15 @@ namespace PCIT\Support;
 
 class CI
 {
+    const CONFIG_MISCONFIGURED = 'misconfigured';
+
     const BUILD_ACTIVATE = 1;
 
     const BUILD_DEACTIVATE = 0;
 
     const BUILD_EVENT_PUSH = 'push';
+
+    const BUILD_EVENT_REPOSITORY_DISPATCH = 'repository_dispatch';
 
     const BUILD_EVENT_TAG = 'tag';
 
